@@ -1,0 +1,9 @@
+{
+  "botium": {
+    "Capabilities": {
+      "PROJECTNAME": "Botium Project wit.ai",
+      "CONTAINERMODE": "witai",
+      "WITAI_TOKEN": "CVS5TN4RDIU52RGANVR3AG2N53I2CEQJ"
+    }
+  }
+}

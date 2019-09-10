@@ -1,0 +1,7 @@
+temperature
+
+#me
+What's the current temperature?
+
+#bot
+INTENT temperature

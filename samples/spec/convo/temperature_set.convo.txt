@@ -1,0 +1,9 @@
+temperature set
+
+#me
+set the temperature to 70 degrees
+
+#bot
+INTENT temperature_set
+ENTITIES temperature
+ENTITY_VALUES 70
