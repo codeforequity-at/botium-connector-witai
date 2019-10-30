@@ -1,4 +1,4 @@
-hierarchical entities
+composite entities
 
 #me
 Want to buy a 2014 grey Pilot
