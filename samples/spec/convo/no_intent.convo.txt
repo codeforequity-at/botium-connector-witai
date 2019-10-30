@@ -4,3 +4,4 @@ no intent
 This has no intent
 
 #bot
+INTENT none

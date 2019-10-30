@@ -71,13 +71,20 @@ class BotiumConnectorWITAI {
 
       return result
     }
+    const intent = (data.entities && data.entities.intent && data.entities.intent.length > 0)
+      ? {
+        name: data.entities.intent[0].value,
+        confidence: data.entities.intent[0].confidence,
+        intents: data.entities.intent.map((intent) => { return { name: intent.value, confidence: intent.confidence } })
+      }
+      : {
+        name: 'none',
+        confidence: 1,
+        incomprehension: true
+      }
     const botMsg = {
       nlp: {
-        intent: data.entities && data.entities.intent && data.entities.intent.length > 0 && {
-          name: data.entities.intent[0].value,
-          confidence: data.entities.intent[0].confidence,
-          intents: data.entities.intent.map((intent) => { return { name: intent.value, confidence: intent.confidence } })
-        },
+        intent,
         entities: flatEntitiesObject(data.entities)
       },
       sourceData: data

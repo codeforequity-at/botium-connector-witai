@@ -112,4 +112,9 @@ The API version to use instead of the recommended one
 ```
 INTENT <EntityRole>
 ```
-* wit.ai supports 0, 1, or more intents for a utterance. But you can assert with Botium just one. 
+* If wit.ai does not recognizes any intent (utterance is not recognized, or utterance has no intent) then Botium will add a none intent: 
+```
+INTENT none
+```
+
+* wit.ai supports more intents for a utterance, but Botium does not.
