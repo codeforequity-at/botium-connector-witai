@@ -13,6 +13,19 @@ __Did you read the [Botium in a Nutshell](https://medium.com/@floriantreml/botiu
 ## How it works
 Botium connects to your wit.ai using its [Wit Node.js SDK](https://github.com/wit-ai/node-wit). It extracts the NLP information for using with Botium and it's NLP asserters.
 
+You can assert composite entities too:
+```
+INTENT <CompositeEntityName>.<EntityName>
+```
+or just
+```
+INTENT <CompositeEntityName>
+```
+and
+```
+INTENT_CONFIDENCE <CompositeEntityConfidence>
+```
+
 It can be used as any other Botium connector with all Botium Stack components:
 * [Botium CLI](https://github.com/codeforequity-at/botium-cli/)
 * [Botium Bindings](https://github.com/codeforequity-at/botium-bindings/)
@@ -51,7 +64,7 @@ _Already integrated into Botium Box, no setup required_
 
 Process is very simple, you just need the wit.ai server access token. After creating your app, you can find your access token in the app's Settings tab.
 
-Create a botium.json with this URL in your project directory: 
+Create a botium.json with this URL in your project directory:
 
 ```
 {
@@ -69,7 +82,7 @@ Botium setup is ready, you can begin to write your [BotiumScript](https://github
 
 ## How to start sample
 
-There is a small demo in [samples](./samples) with Botium Bindings. 
+There is a small demo in [samples](./samples) with Botium Bindings.
 
 Install the packages, and run the test:
 ```
@@ -93,3 +106,15 @@ Context JSON object for wit.ai, see [here](https://wit.ai/docs/http/20170307#con
 _Default: empty_
 
 The API version to use instead of the recommended one
+
+## Open Issues and Restrictions
+* For wit.ai the entity role is an alias for name. You can assert an entity just with alias:
+```
+INTENT <EntityRole>
+```
+* If wit.ai does not recognizes any intent (utterance is not recognized, or utterance has no intent) then Botium will add a none intent: 
+```
+INTENT none
+```
+
+* wit.ai supports more intents for a utterance, but Botium does not.

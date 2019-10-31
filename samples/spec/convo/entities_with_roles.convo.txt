@@ -1,0 +1,7 @@
+entities with roles
+
+#me
+I want to travel from vienna to budapest in europe
+
+#bot
+ENTITIES from|to|location

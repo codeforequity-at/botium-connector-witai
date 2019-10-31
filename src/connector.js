@@ -48,20 +48,44 @@ class BotiumConnectorWITAI {
 
   async UserSays (msg) {
     const data = await this.client.message(msg.messageText, this.context)
-    debug(`UserSays: ${msg.messageText} => ${util.inspect(data)}`)
+    debug(`UserSays: ${msg.messageText} => ${JSON.stringify(data)}`)
 
+    const flatEntitiesArray = (name, entities, result, compositeEntityName) => {
+      for (const entry of entities) {
+        result.push(
+          {
+            name: compositeEntityName ? `${compositeEntityName}.${name}` : name,
+            value: entry.value,
+            confidence: entry.confidence
+          }
+        )
+        entry.entities && flatEntitiesObject(entry.entities, result, name)
+      }
+    }
+    const flatEntitiesObject = (entities, result = [], compositeEntityName = null) => {
+      for (const name of Object.keys(entities)) {
+        if (compositeEntityName || name !== 'intent') {
+          flatEntitiesArray(name, entities[name], result, compositeEntityName)
+        }
+      }
+
+      return result
+    }
+    const intent = (data.entities && data.entities.intent && data.entities.intent.length > 0)
+      ? {
+        name: data.entities.intent[0].value,
+        confidence: data.entities.intent[0].confidence,
+        intents: data.entities.intent.map((intent) => { return { name: intent.value, confidence: intent.confidence } })
+      }
+      : {
+        name: 'none',
+        confidence: 1,
+        incomprehension: true
+      }
     const botMsg = {
       nlp: {
-        intent: data.entities && data.entities.intent && data.entities.intent.length > 0 && {
-          name: data.entities.intent[0].value,
-          confidence: data.entities.intent[0].confidence,
-          intents: data.entities.intent.map((intent) => { return { name: intent.value, confidence: intent.confidence } })
-        },
-        entities: data.entities && Object.keys(data.entities).filter(e => e !== 'intent').map(e => ({
-          name: e,
-          value: data.entities[e][0].value,
-          confidence: data.entities[e][0].confidence
-        }))
+        intent,
+        entities: flatEntitiesObject(data.entities)
       },
       sourceData: data
     }

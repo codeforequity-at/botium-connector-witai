@@ -1,0 +1,7 @@
+composite entities
+
+#me
+Want to buy a 2014 grey Pilot
+
+#bot
+ENTITIES car.year|car.color|car.model|car

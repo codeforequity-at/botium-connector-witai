@@ -1,0 +1,7 @@
+more entities same name
+
+#me
+2 and 2 is 4
+
+#bot
+ENTITIES number|number|number

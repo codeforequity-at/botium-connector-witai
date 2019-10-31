@@ -1,0 +1,7 @@
+geeting
+
+#me
+hi
+
+#bot
+INTENT GREETING
