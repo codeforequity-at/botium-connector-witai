@@ -1,4 +1,4 @@
-geeting
+greeting
 
 #me
 hi
