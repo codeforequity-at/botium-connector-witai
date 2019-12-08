@@ -3,7 +3,8 @@
     "Capabilities": {
       "PROJECTNAME": "Botium Project wit.ai",
       "CONTAINERMODE": "witai",
-      "WITAI_TOKEN": "Y2ZDBRM53LVXT53IPXF2MVSLTI45SB5D"
+      "WITAI_TOKEN": "CVS5TN4RDIU52RGANVR3AG2N53I2CEQJ",
+      "WITAI_LANG": "en"
     }
   }
 }

@@ -1,4 +1,12 @@
+const BotiumConnectorWITAI = require('./src/connector')
+const { extractIntentUtterances, trainIntentUtterances, cleanupIntentUtterances } = require('./src/nlp')
+
 module.exports = {
   PluginVersion: 1,
-  PluginClass: require('./src/connector.js')
+  PluginClass: BotiumConnectorWITAI,
+  NLP: {
+    ExtractIntentUtterances: extractIntentUtterances,
+    TrainIntentUtterances: trainIntentUtterances,
+    CleanupIntentUtterances: cleanupIntentUtterances
+  }
 }

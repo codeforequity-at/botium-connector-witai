@@ -1,4 +1,3 @@
-const util = require('util')
 const _ = require('lodash')
 const { log, Wit } = require('node-wit')
 const debug = require('debug')('botium-connector-witai')
@@ -6,7 +5,13 @@ const debug = require('debug')('botium-connector-witai')
 const Capabilities = {
   WITAI_TOKEN: 'WITAI_TOKEN',
   WITAI_CONTEXT: 'WITAI_CONTEXT',
-  WITAI_APIVERSION: 'WITAI_APIVERSION'
+  WITAI_APIVERSION: 'WITAI_APIVERSION',
+  WITAI_LANG: 'WITAI_LANG'
+}
+
+const Defaults = {
+  [Capabilities.WITAI_APIVERSION]: '20160526',
+  [Capabilities.WITAI_LANG]: 'en'
 }
 
 class BotiumConnectorWITAI {
@@ -16,6 +21,8 @@ class BotiumConnectorWITAI {
   }
 
   Validate () {
+    this.caps = Object.assign({}, Defaults, this.caps)
+
     if (!this.caps[Capabilities.WITAI_TOKEN]) throw new Error('WITAI_TOKEN capability required')
 
     this.context = null
@@ -75,7 +82,7 @@ class BotiumConnectorWITAI {
       ? {
         name: data.entities.intent[0].value,
         confidence: data.entities.intent[0].confidence,
-        intents: data.entities.intent.map((intent) => { return { name: intent.value, confidence: intent.confidence } })
+        intents: data.entities.intent.length > 1 && data.entities.intent.slice(1).map((intent) => { return { name: intent.value, confidence: intent.confidence } })
       }
       : {
         name: 'none',
