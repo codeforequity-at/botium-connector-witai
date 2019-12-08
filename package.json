@@ -1,6 +1,6 @@
 {
   "name": "botium-connector-witai",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Botium Connector for wit.ai",
   "main": "dist/botium-connector-witai-cjs.js",
   "module": "dist/botium-connector-witai-es.js",
