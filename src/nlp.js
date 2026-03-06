@@ -1,7 +1,6 @@
 const path = require('path')
 const _ = require('lodash')
 const randomize = require('randomatic')
-const request = require('request-promise-native')
 const botium = require('botium-core')
 const debug = require('debug')('botium-connector-witai-nlp')
 
@@ -16,16 +15,18 @@ const getCaps = (caps) => {
 const extractIntentUtterances = async ({ caps }) => {
   const driver = new botium.BotDriver(getCaps(caps))
 
-  const getIntentsRequestOptions = {
+  const response = await fetch('https://api.wit.ai/entities/intent?v=20160526', {
     method: 'GET',
-    uri: 'https://api.wit.ai/entities/intent?v=20160526',
     headers: {
       Authorization: `Bearer ${driver.caps.WITAI_TOKEN}`
-    },
-    json: true
+    }
+  })
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`)
   }
 
-  const witIntentsList = await request(getIntentsRequestOptions)
+  const witIntentsList = await response.json()
   debug(`Wit.ai app got intents: ${JSON.stringify(witIntentsList, null, 2)}`)
 
   const intents = []
@@ -52,45 +53,56 @@ const trainIntentUtterances = async ({ caps }, intents, { origIntentsList }) => 
     private: true
   }
 
-  const postAppDataRequestOptions = {
+  const response = await fetch('https://api.wit.ai/apps?v=20160526', {
     method: 'POST',
-    uri: 'https://api.wit.ai/apps?v=20160526',
     headers: {
-      Authorization: `Bearer ${driver.caps.WITAI_TOKEN}`
+      Authorization: `Bearer ${driver.caps.WITAI_TOKEN}`,
+      'Content-Type': 'application/json'
     },
-    body: newAppData,
-    json: true
+    body: JSON.stringify(newAppData)
+  })
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`)
   }
 
-  const newAppResponse = await request(postAppDataRequestOptions)
+  const newAppResponse = await response.json()
   debug(`Wit.ai created app: ${JSON.stringify(newAppResponse, null, 2)}`)
 
   for (const intent of intents || []) {
-    await request({
+    const response = await fetch('https://api.wit.ai/entities/intent/values?v=20160526', {
       method: 'POST',
-      uri: 'https://api.wit.ai/entities/intent/values?v=20160526',
       headers: {
-        Authorization: `Bearer ${newAppResponse.access_token}`
+        Authorization: `Bearer ${newAppResponse.access_token}`,
+        'Content-Type': 'application/json'
       },
-      body: {
+      body: JSON.stringify({
         value: intent.intentName,
         expressions: intent.utterances
-      },
-      json: true
+      })
     })
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
     debug(`Wit.ai created intent: ${intent.intentName}`)
   }
 
   while (true) {
     const sampleUtterance = _.sample(_.sample(intents).utterances)
-    const textResponse = await request({
+    const response = await fetch(`https://api.wit.ai/message?v=20160526&q=${encodeURIComponent(sampleUtterance)}`, {
       method: 'GET',
-      uri: `https://api.wit.ai/message?v=20160526&q=${encodeURIComponent(sampleUtterance)}`,
       headers: {
         Authorization: `Bearer ${newAppResponse.access_token}`
-      },
-      json: true
+      }
     })
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const textResponse = await response.json()
     if (textResponse.entities.intent) break
     debug(`Wit.ai waiting for sample query to return intent (last utt: ${sampleUtterance})`)
     await timeout(2000)
